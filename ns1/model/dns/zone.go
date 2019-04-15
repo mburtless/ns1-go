@@ -1,7 +1,7 @@
 package dns
 
 import "encoding/json"
-import "gopkg.in/ns1/ns1-go.v2/rest/model/data"
+import "github.com/mburtless/ns1-go.v3/ns1/model/data"
 
 // Zone wraps an NS1 /zone resource
 type Zone struct {
