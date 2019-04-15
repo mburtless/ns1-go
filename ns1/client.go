@@ -60,3 +60,9 @@ func newInsecureHTTPClient() *http.Client {
 	}
 	return &http.Client{Transport: tr}
 }
+
+// NewRequest returns a new Request pointer of the NS1 API
+// operation and parameters
+func (c *Client) NewRequest(operation *Operation, params interface{}, data interface{}) *Request {
+	return New(c.config, operation, params, data)
+}

@@ -24,6 +24,7 @@ type ListZonesInput struct {
 	//NextToken *string `type:"string"`
 }
 
+// ListZonesOutput
 type ListZonesOutput struct {
 	// If this value is present, there are additional results to be displayed. To
 	// retrieve them, call ListTags again, with NextToken set to this value.
@@ -40,7 +41,21 @@ func (r ListZonesRequest) Send() (*ListZonesOutput, error) {
 // ListZonesRequest returns a request value for making API operation for
 // NS1 Zones
 func (z *ZonesServiceOp) ListZonesRequest(input *ListZonesInput) ListZonesRequest {
-	// Not yet implemented
-	lz := ListZonesRequest{}
-	return lz
+	// define Operation
+	op := &Operation{
+		Name:       "",
+		HTTPMethod: "GET",
+		HTTPPath:   "zones",
+	}
+
+	if input == nil {
+		input = &ListZonesInput{}
+	}
+
+	// Init empty output struct to hold response later
+	output := &ListZonesOutput{}
+	// create request obj via call to NewRequest(operation, input, output)
+	req := z.client.NewRequest(op, input, output)
+	//return ListZonesRequest struct containing request obj and input
+	return ListZonesRequest{Request: req, Input: input}
 }
