@@ -1,6 +1,6 @@
 package ns1
 
-import "model/dns"
+import "github.com/mburtless/ns1-go/ns1/model/dns"
 
 type ZonesService interface {
 	ListZonesRequest(*ListZonesInput) ListZonesRequest
@@ -41,5 +41,6 @@ func (r ListZonesRequest) Send() (*ListZonesOutput, error) {
 // NS1 Zones
 func (z *ZonesServiceOp) ListZonesRequest(input *ListZonesInput) ListZonesRequest {
 	// Not yet implemented
-	return nil
+	lz := ListZonesRequest{}
+	return lz
 }
