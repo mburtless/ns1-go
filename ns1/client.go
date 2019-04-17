@@ -8,7 +8,7 @@ import (
 // Client manages communication with the NS1 Rest API.
 type Client struct {
 	// Configuration of the client
-	config *Config
+	config Config
 
 	// The HTTP client to use when sending requests. Defaults to
 	// `http.DefaultClient`.
@@ -32,7 +32,7 @@ type Client struct {
 
 // NewClient will return a pointer to a new initialized Client
 // TODO: Allow users to pass their own httpclient as param
-func NewClient(cfg *Config) *Client {
+func NewClient(cfg Config) *Client {
 	c := &Client{
 		config: cfg,
 	}
@@ -64,5 +64,5 @@ func newInsecureHTTPClient() *http.Client {
 // NewRequest returns a new Request pointer of the NS1 API
 // operation and parameters
 func (c *Client) NewRequest(operation *Operation, params interface{}, data interface{}) *Request {
-	return New(c.config, operation, params, data)
+	return New(c.config, c.httpClient, operation, params, data)
 }

@@ -22,7 +22,7 @@ func TestNewConfig(t *testing.T) {
 
 	c, err := NewConfig(input)
 	require.NoError(t, err)
-	validateConfig(t, c, expectedConfig)
+	validateConfig(t, &c, expectedConfig)
 
 	// Test creating config with custom endpoint
 	customEndpoint := "https://api.foo.com/v1/"
@@ -30,7 +30,7 @@ func TestNewConfig(t *testing.T) {
 	expectedConfig.endpoint, _ = url.Parse(customEndpoint)
 	c, err = NewConfig(input)
 	require.NoError(t, err)
-	validateConfig(t, c, expectedConfig)
+	validateConfig(t, &c, expectedConfig)
 
 	// Creating config without apiKey should raise error
 	c, err = NewConfig(nil)

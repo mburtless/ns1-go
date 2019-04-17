@@ -49,16 +49,16 @@ type NewConfigInput struct {
 }
 
 // NewConfig returns pointer to a new Config
-func NewConfig(input *NewConfigInput) (*Config, error) {
+func NewConfig(input *NewConfigInput) (Config, error) {
 	if input == nil {
 		input = &NewConfigInput{}
 	}
 
 	if input.APIKey == "" {
-		return nil, ErrAPIKeyReq
+		return Config{}, ErrAPIKeyReq
 	}
 
-	c := &Config{
+	c := Config{
 		userAgent: defaultUserAgent,
 		apiKey:    input.APIKey,
 		ignoreSSL: defaultIgnoreSSL,
@@ -71,7 +71,7 @@ func NewConfig(input *NewConfigInput) (*Config, error) {
 		c.endpoint, err = url.Parse(input.Endpoint)
 	}
 	if err != nil {
-		return nil, err
+		return Config{}, err
 	}
 
 	if input.UserAgent != "" {

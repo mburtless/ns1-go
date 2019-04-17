@@ -2,9 +2,11 @@ package main
 
 import (
 	"fmt"
-	"os"
-	"github.com/mburtless/ns1-go/ns1"
 	"net/http/httputil"
+	"os"
+	"reflect"
+
+	"github.com/mburtless/ns1-go/ns1"
 )
 
 func main() {
@@ -25,6 +27,22 @@ func main() {
 	byts, _ := httputil.DumpRequest(r.HTTPRequest, true)
 	fmt.Println("\n\nRequest:", string(byts))
 
-	out, _ := r.Send()
-	fmt.Printf("\nOut: %v\n", out)
+	out, err := r.Send()
+	t := reflect.TypeOf(out)
+	fmt.Printf("\nOut: %v\nErr: %v\nType: %v\n", out, err, t)
+	fmt.Printf("Resp: %v\n", r.HTTPResponse)
+	//fmt.Printf("Ipsum: %v\n", (*out)[0])
+	fmt.Printf("Ipsum: %v\n", out.Zones[0])
+
+	zn := "ipsumzone.test"
+	zoneIn := ns1.GetZoneInput{ZoneName: &zn}
+	fmt.Printf("\nInput: %v\n", *zoneIn.ZoneName)
+
+	zr := client.Zones.GetZoneRequest(&zoneIn)
+	byts, _ = httputil.DumpRequest(zr.HTTPRequest, true)
+	fmt.Println("\n\nRequest:", string(byts))
+
+	zOut, err := zr.Send()
+	t = reflect.TypeOf(zOut)
+	fmt.Printf("\nOut: %v\nErr: %v\nType: %v\n", zOut, err, t)
 }
