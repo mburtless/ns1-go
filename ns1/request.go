@@ -1,7 +1,9 @@
 package ns1
 
 import (
+	"bytes"
 	"encoding/json"
+	"io/ioutil"
 	"net/http"
 	"net/url"
 )
@@ -28,41 +30,85 @@ type Operation struct {
 	//*Paginator
 }
 
-// NeqRequest returns a new Request pointer for the NS1 API
+// New returns a new Request pointer for the NS1 API
 // operation and parameters
 //
 // Params is any value of input parameters to be the request payload
+// This will be ignored on any GET or DELETE request
 // Data is pointer value to an object which the request's response
 // payload will be deserialized to.
 func New(cfg Config, httpClient *http.Client, operation *Operation, params interface{}, data interface{}) *Request {
+	// init fields
+	r := &Request{
+		Config:     cfg,
+		Operation:  operation,
+		Body:       nil,
+		HTTPClient: httpClient,
+		Params:     params,
+		Data:       data,
+	}
+
 	// TODO make copy of config?
 	method := operation.HTTPMethod
 	if method == "" {
 		method = "GET"
 	}
 	rel, err := url.Parse(operation.HTTPPath)
+	if err != nil {
+		r.Error = err
+	}
 	uri := cfg.endpoint.ResolveReference(rel)
 
 	// Handle body
-
-	httpReq, err := http.NewRequest(method, uri.String(), nil)
-
+	r.Body = new(bytes.Buffer)
+	if method != "GET" && method != "DELETE" {
+		r.SetBufferBody()
+	}
+	httpReq, err := http.NewRequest(method, uri.String(), r.Body.(*bytes.Buffer))
+	if err != nil {
+		r.Error = err
+	}
 	// Handle headers
 	httpReq.Header.Add(headerAuth, cfg.apiKey)
 	httpReq.Header.Add("User-Agent", cfg.userAgent)
-
-	// init remaining fields
-	r := &Request{
-		Config:      cfg,
-		Operation:   operation,
-		Body:        nil,
-		HTTPRequest: httpReq,
-		HTTPClient:  httpClient,
-		Error:       err,
-		Params:      params,
-		Data:        data,
-	}
+	r.HTTPRequest = httpReq
 	return r
+}
+
+// SetBufferBody marshals the contents of the Params field, if present, to the Body field.
+// If Params field is empty, no action is taken
+// If an error is encournterd during marshaling, it is saved to the Error field
+func (r *Request) SetBufferBody() {
+	if r.Params != nil {
+		err := json.NewEncoder(r.Body.(*bytes.Buffer)).Encode(r.Params)
+		if err != nil {
+			r.Error = err
+		}
+	}
+}
+
+// CheckResponse handles parsing of rest api errors. Returns nil if no error.
+func (r *Request) CheckResponse() error {
+	if c := r.HTTPResponse.StatusCode; c >= 200 && c <= 299 {
+		return nil
+	}
+
+	restErr := &RespError{Resp: r.HTTPResponse}
+
+	b, err := ioutil.ReadAll(r.HTTPResponse.Body)
+	if err != nil {
+		return err
+	}
+	if len(b) == 0 {
+		return restErr
+	}
+
+	err = json.Unmarshal(b, restErr)
+	if err != nil {
+		return err
+	}
+
+	return restErr
 }
 
 // SendToData wraps Send to send the request.
@@ -96,6 +142,10 @@ func (r *Request) Send(v interface{}) error {
 	defer resp.Body.Close()
 
 	r.HTTPResponse = resp
+	err = r.CheckResponse()
+	if err != nil {
+		return err
+	}
 	// TODO: Parse rate headers
 	// validate response
 	// Parse to r.data?

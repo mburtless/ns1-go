@@ -11,23 +11,25 @@ import (
 )
 
 var (
-	mux    *http.ServeMux
-	ctx    = context.TODO()
-	client *Client
-	server *httptest.Server
+	mux      *http.ServeMux
+	ctx      = context.TODO()
+	client   *Client
+	server   *httptest.Server
+	endpoint string
+	apiKey   = "testkey"
 )
 
 func setup() {
 	// create server
 	mux = http.NewServeMux()
 	server = httptest.NewServer(mux)
+	endpoint = fmt.Sprintf("%s/v1/", server.URL)
 	//url, _ := url.Parse(server.URL)
 
 	//create config
-	apiKey := "testkey"
 	ci := &NewConfigInput{
 		APIKey:   apiKey,
-		Endpoint: fmt.Sprintf("%s/v1/", server.URL),
+		Endpoint: endpoint,
 	}
 	config, _ := NewConfig(ci)
 
@@ -41,6 +43,18 @@ func teardown() {
 func testMethod(t *testing.T, r *http.Request, expected string) {
 	if expected != r.Method {
 		t.Errorf("Request method = %v, expected %v", r.Method, expected)
+	}
+}
+
+func testRequestHeaders(t *testing.T, r Request) {
+	assert.Equal(t, r.Config.userAgent, r.HTTPRequest.Header.Get("User-Agent"))
+	assert.Equal(t, r.Config.apiKey, r.HTTPRequest.Header.Get(headerAuth))
+}
+
+func addRequestHeaders(r *http.Request) {
+	if client != nil && r != nil {
+		r.Header.Add(headerAuth, client.config.apiKey)
+		r.Header.Add("User-Agent", client.config.userAgent)
 	}
 }
 
