@@ -6,20 +6,24 @@ import (
 	"log"
 	"os"
 
-	"github.com/mburtless/ns1-go-v3/ns1"
-	"github.com/mburtless/ns1-go-v3/ns1/zones"
+	"github.com/mburtless/ns1-go/ns1"
+	"github.com/mburtless/ns1-go/ns1/zones"
 )
 
 func main() {
+	// Create client
 	k := os.Getenv("NS1_APIKEY")
-
 	client, err := ns1.New(ns1.Config{APIKey: k})
 	if err != nil {
 		log.Panic(err)
 	}
-	zoneIn := zones.NewZonesByZoneGetParams()
+
+	// Create input
+	zoneIn := zones.NewGetZoneParams()
 	zoneIn.SetZone("ipsumzone.test")
-	zone, err := client.Zones.ZonesByZoneGet(context.Background(), zoneIn)
+
+	// Get zone
+	zone, err := client.Zones.GetZone(context.Background(), zoneIn)
 	if err != nil {
 		log.Panic(err)
 	}

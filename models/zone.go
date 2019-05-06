@@ -15,7 +15,7 @@ import (
 	"github.com/go-openapi/validate"
 )
 
-// Zone Zone
+// Zone zone
 // swagger:model Zone
 type Zone struct {
 
@@ -25,7 +25,7 @@ type Zone struct {
 
 	// expiry
 	// Required: true
-	Expiry *int32 `json:"expiry"`
+	Expiry *int64 `json:"expiry"`
 
 	// hostmaster
 	// Required: true
@@ -45,31 +45,31 @@ type Zone struct {
 
 	// networks
 	// Required: true
-	Networks []int32 `json:"networks"`
+	Networks []int64 `json:"networks"`
 
 	// nx ttl
 	// Required: true
-	NxTTL *int32 `json:"nx_ttl"`
+	NxTTL *int64 `json:"nx_ttl"`
 
 	// primary
 	// Required: true
-	Primary *ZoneRequestPrimary `json:"primary"`
+	Primary *ZonePrimary `json:"primary"`
 
 	// records
 	// Required: true
-	Records []*ZoneRequestRecords `json:"records"`
+	Records []*ZoneRecordsItems0 `json:"records"`
 
 	// refresh
 	// Required: true
-	Refresh *int32 `json:"refresh"`
+	Refresh *int64 `json:"refresh"`
 
 	// retry
 	// Required: true
-	Retry *int32 `json:"retry"`
+	Retry *int64 `json:"retry"`
 
 	// ttl
 	// Required: true
-	TTL *int32 `json:"ttl"`
+	TTL *int64 `json:"ttl"`
 
 	// zone
 	// Required: true
@@ -313,6 +313,210 @@ func (m *Zone) MarshalBinary() ([]byte, error) {
 // UnmarshalBinary interface implementation
 func (m *Zone) UnmarshalBinary(b []byte) error {
 	var res Zone
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*m = res
+	return nil
+}
+
+// ZonePrimary zone primary
+// swagger:model ZonePrimary
+type ZonePrimary struct {
+
+	// enabled
+	// Required: true
+	Enabled *bool `json:"enabled"`
+
+	// secondaries
+	// Required: true
+	Secondaries []*Secondaries `json:"secondaries"`
+}
+
+// Validate validates this zone primary
+func (m *ZonePrimary) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.validateEnabled(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateSecondaries(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (m *ZonePrimary) validateEnabled(formats strfmt.Registry) error {
+
+	if err := validate.Required("primary"+"."+"enabled", "body", m.Enabled); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *ZonePrimary) validateSecondaries(formats strfmt.Registry) error {
+
+	if err := validate.Required("primary"+"."+"secondaries", "body", m.Secondaries); err != nil {
+		return err
+	}
+
+	for i := 0; i < len(m.Secondaries); i++ {
+		if swag.IsZero(m.Secondaries[i]) { // not required
+			continue
+		}
+
+		if m.Secondaries[i] != nil {
+			if err := m.Secondaries[i].Validate(formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("primary" + "." + "secondaries" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (m *ZonePrimary) MarshalBinary() ([]byte, error) {
+	if m == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(m)
+}
+
+// UnmarshalBinary interface implementation
+func (m *ZonePrimary) UnmarshalBinary(b []byte) error {
+	var res ZonePrimary
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*m = res
+	return nil
+}
+
+// ZoneRecordsItems0 zone records items0
+// swagger:model ZoneRecordsItems0
+type ZoneRecordsItems0 struct {
+
+	// domain
+	// Required: true
+	Domain *string `json:"domain"`
+
+	// id
+	// Required: true
+	ID *string `json:"id"`
+
+	// short answers
+	// Required: true
+	ShortAnswers []string `json:"short_answers"`
+
+	// tier
+	// Required: true
+	Tier *int64 `json:"tier"`
+
+	// ttl
+	TTL int64 `json:"ttl,omitempty"`
+
+	// type
+	// Required: true
+	Type *string `json:"type"`
+}
+
+// Validate validates this zone records items0
+func (m *ZoneRecordsItems0) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.validateDomain(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateID(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateShortAnswers(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateTier(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateType(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (m *ZoneRecordsItems0) validateDomain(formats strfmt.Registry) error {
+
+	if err := validate.Required("domain", "body", m.Domain); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *ZoneRecordsItems0) validateID(formats strfmt.Registry) error {
+
+	if err := validate.Required("id", "body", m.ID); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *ZoneRecordsItems0) validateShortAnswers(formats strfmt.Registry) error {
+
+	if err := validate.Required("short_answers", "body", m.ShortAnswers); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *ZoneRecordsItems0) validateTier(formats strfmt.Registry) error {
+
+	if err := validate.Required("tier", "body", m.Tier); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *ZoneRecordsItems0) validateType(formats strfmt.Registry) error {
+
+	if err := validate.Required("type", "body", m.Type); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (m *ZoneRecordsItems0) MarshalBinary() ([]byte, error) {
+	if m == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(m)
+}
+
+// UnmarshalBinary interface implementation
+func (m *ZoneRecordsItems0) UnmarshalBinary(b []byte) error {
+	var res ZoneRecordsItems0
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}

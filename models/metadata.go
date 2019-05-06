@@ -11,7 +11,7 @@ import (
 	"github.com/go-openapi/swag"
 )
 
-// Metadata Metadata
+// Metadata metadata
 // swagger:model Metadata
 type Metadata struct {
 

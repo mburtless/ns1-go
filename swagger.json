@@ -1,40 +1,21 @@
 {
   "swagger": "2.0",
   "info": {
-    "version": "0.0.1",
-    "title": "ns1",
     "description": "Manage your zones and records, data sources and feeds, account settings and users, and other aspects of your NS1 account.",
-    "contact": {}
+    "license": {
+      "name": "MIT"
+    },
+    "title": "NS1",
+    "version": "0.0.1"
   },
   "host": "api.nsone.net",
   "basePath": "/v1/",
-  "securityDefinitions": {
-    "NSONE-Key": {
-      "type": "apiKey",
-      "description": "Most API requests are authenticated with a simple API Key, which you must specify in the X-NSONE-Key request header. You can manage your API Keys in my.nsone.net. You should treat your API Keys as secrets! You should also give them only the minimal access needed for your application.",
-      "name": "X-NSONE-Key",
-      "in": "header"
-    }
-  },
   "schemes": [
     "https"
-  ],
-  "consumes": [
-    "application/json"
-  ],
-  "produces": [
-    "application/json"
   ],
   "paths": {
     "/zones": {
       "get": {
-        "description": "Returns all active zones and basic zone configuration details for each.",
-        "summary": "getZones",
-        "tags": [
-          "Zones"
-        ],
-        "operationId": "ZonesGet",
-        "deprecated": false,
         "produces": [
           "application/json"
         ],
@@ -43,12 +24,8 @@
           "200": {
             "description": "A list of active zones",
             "schema": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/Zone"
-              }
-            },
-            "headers": {}
+              "$ref": "#/definitions/Zones"
+            }
           },
           "default": {
             "description": "unexpected error",
@@ -57,41 +34,35 @@
             }
           }
         },
-        "security": [
-          {
-            "NSONE-Key": []
-          }
-        ]
-      }
-    },
-    "/zones/{zone}": {
-      "get": {
-        "description": "Returns a single active Zone and its basic configuration details. For convenience, a list of records in the zone, and some basic details of each record, is also included.",
-        "summary": "getZone",
         "tags": [
           "Zones"
         ],
-        "operationId": "ZonesByZoneGet",
-        "deprecated": false,
+        "description": "Returns all active zones and basic zone configuration details for each.",
+        "operationId": "getZones",
+        "summary": "Get list of active zones"
+      }
+    },
+    "/zones/{zone}": {
+      "parameters": [
+        {
+          "description": "The name of the zone to retrieve",
+          "in": "path",
+          "name": "zone",
+          "required": true,
+          "type": "string"
+        }
+      ],
+      "get": {
         "produces": [
           "application/json"
         ],
-        "parameters": [
-          {
-            "name": "zone",
-            "in": "path",
-            "required": true,
-            "type": "string",
-            "description": "The name of the zone to retrieve"
-          }
-        ],
+        "parameters": [],
         "responses": {
           "200": {
             "description": "A single active zone",
             "schema": {
               "$ref": "#/definitions/Zone"
-            },
-            "headers": {}
+            }
           },
           "400": {
             "description": "Bad Request",
@@ -106,36 +77,49 @@
             }
           }
         },
-        "security": [
-          {
-            "NSONE-Key": []
-          }
-        ]
-      },
-      "put": {
-        "description": "Very long desc of creating a new zone",
-        "summary": "createZone",
         "tags": [
           "Zones"
         ],
-        "operationId": "ZonesByZonePut",
-        "deprecated": false,
+        "description": "Returns a single active Zone and its basic configuration details. For convenience, a list of records in the zone, and some basic details of each record, is also included.",
+        "operationId": "getZone",
+        "summary": "Get a zone's details"
+      },
+      "post": {
         "produces": [
+          "text/html"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "A single active zone",
+            "schema": {
+              "$ref": "#/definitions/Zone"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/BadRequest"
+            }
+          }
+        },
+        "tags": [
+          "Zones"
+        ],
+        "description": "Very long desc of modifying a zone",
+        "operationId": "modifyZone",
+        "summary": "Modify a zone"
+      },
+      "put": {
+        "consumes": [
           "application/json"
         ],
         "parameters": [
           {
-            "name": "zone",
-            "in": "path",
-            "required": true,
-            "type": "string",
-            "description": "The name of the zone to retrieve"
-          },
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
             "description": "The zone to create",
+            "in": "body",
+            "name": "body",
+            "required": true,
             "schema": {
               "$ref": "#/definitions/ZoneRequest"
             }
@@ -146,8 +130,7 @@
             "description": "A single active zone",
             "schema": {
               "$ref": "#/definitions/Zone"
-            },
-            "headers": {}
+            }
           },
           "400": {
             "description": "Bad Request",
@@ -156,192 +139,161 @@
             }
           }
         },
-        "security": [
-          {
-            "NSONE-Key": []
-          }
-        ]
-      },
-      "post": {
-        "description": "Very long desc of modifying a zone",
-        "summary": "modifyZone",
         "tags": [
           "Zones"
         ],
-        "operationId": "ZonesByZonePost",
-        "deprecated": false,
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "name": "zone",
-            "in": "path",
-            "required": true,
-            "type": "string",
-            "description": "The name of the zone to retrieve"
-          },
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "description": "The zone to create",
-            "schema": {
-              "$ref": "#/definitions/ZoneRequest"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "A single active zone",
-            "schema": {
-              "$ref": "#/definitions/Zone"
-            },
-            "headers": {}
-          },
-          "400": {
-            "description": "Bad Request",
-            "schema": {}
-          }
-        },
-        "security": [
-          {
-            "NSONE-Key": []
-          }
-        ]
+        "description": "Very long desc of creating a new zone",
+        "operationId": "createZone",
+        "summary": "Create a new DNS zone"
       }
     }
   },
   "definitions": {
-    "ZoneRequest": {
-      "title": "ZoneRequest",
-      "type": "object",
+    "BadRequest": {
+      "type": "string"
+    },
+    "Error": {
       "properties": {
-        "id": {
+        "message": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "message"
+      ]
+    },
+    "Metadata": {
+      "properties": {
+        "category": {
           "type": "string"
         },
-        "hostmaster": {
+        "desc": {
           "type": "string"
         },
-        "ttl": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "nx_ttl": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "retry": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "zone": {
+        "shortdesc": {
           "type": "string"
-        },
-        "refresh": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "expiry": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "dns_servers": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
+        }
+      }
+    },
+    "Secondaries": {
+      "properties": {
+        "ip": {
+          "type": "string"
         },
         "networks": {
-          "type": "array",
           "items": {
-            "type": "integer",
-            "format": "int32"
-          }
+            "type": "integer"
+          },
+          "type": "array"
         },
-        "network_pools": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
+        "notify": {
+          "type": "boolean"
         },
-        "primary": {
-          "$ref": "#/definitions/ZoneRequest_primary"
-        },
-        "records": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/ZoneRequest_records"
-          }
-        },
-        "meta": {
-          "$ref": "#/definitions/Metadata"
+        "port": {
+          "type": "integer"
         }
       }
     },
     "Zone": {
-      "title": "Zone",
-      "type": "object",
       "properties": {
-        "id": {
-          "type": "string"
+        "dns_servers": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "expiry": {
+          "type": "integer"
         },
         "hostmaster": {
           "type": "string"
         },
-        "ttl": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "nx_ttl": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "retry": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "zone": {
+        "id": {
           "type": "string"
-        },
-        "refresh": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "expiry": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "dns_servers": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        },
-        "networks": {
-          "type": "array",
-          "items": {
-            "type": "integer",
-            "format": "int32"
-          }
-        },
-        "network_pools": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        },
-        "primary": {
-          "$ref": "#/definitions/ZoneRequest_primary"
-        },
-        "records": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/ZoneRequest_records"
-          }
         },
         "meta": {
           "$ref": "#/definitions/Metadata"
+        },
+        "network_pools": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "networks": {
+          "items": {
+            "type": "integer"
+          },
+          "type": "array"
+        },
+        "nx_ttl": {
+          "type": "integer"
+        },
+        "primary": {
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "secondaries": {
+              "items": {
+                "$ref": "#/definitions/Secondaries"
+              },
+              "type": "array"
+            }
+          },
+          "required": [
+            "enabled",
+            "secondaries"
+          ],
+          "type": "object"
+        },
+        "records": {
+          "items": {
+            "properties": {
+              "domain": {
+                "type": "string"
+              },
+              "id": {
+                "type": "string"
+              },
+              "short_answers": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "tier": {
+                "type": "integer"
+              },
+              "ttl": {
+                "type": "integer"
+              },
+              "type": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "type",
+              "tier",
+              "short_answers",
+              "domain"
+            ],
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "refresh": {
+          "type": "integer"
+        },
+        "retry": {
+          "type": "integer"
+        },
+        "ttl": {
+          "type": "integer"
+        },
+        "zone": {
+          "type": "string"
         }
       },
       "required": [
@@ -361,116 +313,180 @@
         "meta"
       ]
     },
-    "Secondaries": {
-      "title": "Secondaries",
-      "type": "object",
+    "ZoneRequest": {
       "properties": {
-        "ip": {
-          "type": "string"
-        },
-        "port": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "notify": {
-          "type": "boolean"
-        },
-        "networks": {
-          "type": "array",
+        "dns_servers": {
           "items": {
-            "type": "integer",
-            "format": "int32"
-          }
-        }
-      }
-    },
-    "Metadata": {
-      "title": "Metadata",
-      "type": "object",
-      "properties": {
-        "desc": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "expiry": {
+          "type": "integer"
+        },
+        "hostmaster": {
           "type": "string"
         },
-        "category": {
-          "type": "string"
-        },
-        "shortdesc": {
-          "type": "string"
-        }
-      }
-    },
-    "Error": {
-      "title": "Error",
-      "type": "object",
-      "properties": {
-        "message": {
-          "type": "string"
-        }
-      },
-      "required": [
-        "message"
-      ]
-    },
-    "ZoneRequest_primary": {
-      "title": "ZoneRequest_primary",
-      "type": "object",
-      "properties": {
-        "enabled": {
-          "type": "boolean"
-        },
-        "secondaries": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/Secondaries"
-          }
-        }
-      },
-      "required": [
-        "enabled",
-        "secondaries"
-      ]
-    },
-    "ZoneRequest_records": {
-      "title": "ZoneRequest_records",
-      "type": "object",
-      "properties": {
         "id": {
           "type": "string"
         },
-        "type": {
-          "type": "string"
+        "meta": {
+          "$ref": "#/definitions/Metadata"
         },
-        "tier": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "ttl": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "short_answers": {
-          "type": "array",
+        "network_pools": {
           "items": {
             "type": "string"
-          }
+          },
+          "type": "array"
         },
-        "domain": {
+        "networks": {
+          "items": {
+            "type": "integer"
+          },
+          "type": "array"
+        },
+        "nx_ttl": {
+          "type": "integer"
+        },
+        "primary": {
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "secondaries": {
+              "items": {
+                "$ref": "#/definitions/Secondaries"
+              },
+              "type": "array"
+            }
+          },
+          "required": [
+            "enabled",
+            "secondaries"
+          ],
+          "type": "object"
+        },
+        "records": {
+          "items": {
+            "properties": {
+              "domain": {
+                "type": "string"
+              },
+              "id": {
+                "type": "string"
+              },
+              "short_answers": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "tier": {
+                "type": "integer"
+              },
+              "ttl": {
+                "type": "integer"
+              },
+              "type": {
+                "type": "string"
+              }
+            },
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "refresh": {
+          "type": "integer"
+        },
+        "retry": {
+          "type": "integer"
+        },
+        "ttl": {
+          "type": "integer"
+        },
+        "zone": {
           "type": "string"
         }
+      }
+    },
+    "Zones": {
+      "items": {
+        "$ref": "#/definitions/Zone"
       },
-      "required": [
-        "id",
-        "type",
-        "tier",
-        "short_answers",
-        "domain"
-      ]
+      "type": "array"
     }
   },
-  "tags": [
-    {
-      "name": "Zones",
-      "description": ""
+  "securityDefinitions": {
+    "X-NSONE-Key": {
+      "description": "Most API requests are authenticated with a simple API Key, which you must specify in the X-NSONE-Key request header. You can manage your API Keys in my.nsone.net. You should treat your API Keys as secrets! You should also give them only the minimal access needed for your application.",
+      "in": "header",
+      "name": "X-NSONE-Key",
+      "type": "apiKey"
     }
-  ]
+  },
+  "security": [
+    {
+      "X-NSONE-Key": []
+    }
+  ],
+  "x-components": {
+    "parameters": {
+      "zoneNameParam": {
+        "description": "The name of the zone to retrieve",
+        "in": "path",
+        "name": "zone",
+        "required": true,
+        "type": "string"
+      }
+    },
+    "responses": {
+      "200Zone": {
+        "description": "A single active zone",
+        "schema": {
+          "$ref": "#/definitions/Zone"
+        }
+      },
+      "200Zones": {
+        "description": "A list of active zones",
+        "schema": {
+          "$ref": "#/definitions/Zones"
+        }
+      },
+      "400HTMLBadReq": {
+        "description": "Bad Request",
+        "schema": {
+          "$ref": "#/definitions/BadRequest"
+        }
+      },
+      "400JSONBadReq": {
+        "description": "Bad Request",
+        "schema": {
+          "$ref": "#/definitions/Error"
+        }
+      },
+      "404ZoneNotFound": {
+        "description": "Zone not found",
+        "schema": {
+          "$ref": "#/definitions/Error"
+        }
+      },
+      "Default": {
+        "description": "unexpected error",
+        "schema": {
+          "$ref": "#/definitions/Error"
+        }
+      }
+    },
+    "requestBodies": {
+      "zoneReqBody": {
+        "description": "The zone to create",
+        "in": "body",
+        "name": "body",
+        "required": true,
+        "schema": {
+          "$ref": "#/definitions/ZoneRequest"
+        }
+      }
+    }
+  }
 }

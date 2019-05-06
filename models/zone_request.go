@@ -12,9 +12,10 @@ import (
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/swag"
+	"github.com/go-openapi/validate"
 )
 
-// ZoneRequest ZoneRequest
+// ZoneRequest zone request
 // swagger:model ZoneRequest
 type ZoneRequest struct {
 
@@ -22,7 +23,7 @@ type ZoneRequest struct {
 	DNSServers []string `json:"dns_servers"`
 
 	// expiry
-	Expiry int32 `json:"expiry,omitempty"`
+	Expiry int64 `json:"expiry,omitempty"`
 
 	// hostmaster
 	Hostmaster string `json:"hostmaster,omitempty"`
@@ -37,25 +38,25 @@ type ZoneRequest struct {
 	NetworkPools []string `json:"network_pools"`
 
 	// networks
-	Networks []int32 `json:"networks"`
+	Networks []int64 `json:"networks"`
 
 	// nx ttl
-	NxTTL int32 `json:"nx_ttl,omitempty"`
+	NxTTL int64 `json:"nx_ttl,omitempty"`
 
 	// primary
 	Primary *ZoneRequestPrimary `json:"primary,omitempty"`
 
 	// records
-	Records []*ZoneRequestRecords `json:"records"`
+	Records []*ZoneRequestRecordsItems0 `json:"records"`
 
 	// refresh
-	Refresh int32 `json:"refresh,omitempty"`
+	Refresh int64 `json:"refresh,omitempty"`
 
 	// retry
-	Retry int32 `json:"retry,omitempty"`
+	Retry int64 `json:"retry,omitempty"`
 
 	// ttl
-	TTL int32 `json:"ttl,omitempty"`
+	TTL int64 `json:"ttl,omitempty"`
 
 	// zone
 	Zone string `json:"zone,omitempty"`
@@ -155,6 +156,135 @@ func (m *ZoneRequest) MarshalBinary() ([]byte, error) {
 // UnmarshalBinary interface implementation
 func (m *ZoneRequest) UnmarshalBinary(b []byte) error {
 	var res ZoneRequest
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*m = res
+	return nil
+}
+
+// ZoneRequestPrimary zone request primary
+// swagger:model ZoneRequestPrimary
+type ZoneRequestPrimary struct {
+
+	// enabled
+	// Required: true
+	Enabled *bool `json:"enabled"`
+
+	// secondaries
+	// Required: true
+	Secondaries []*Secondaries `json:"secondaries"`
+}
+
+// Validate validates this zone request primary
+func (m *ZoneRequestPrimary) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.validateEnabled(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateSecondaries(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (m *ZoneRequestPrimary) validateEnabled(formats strfmt.Registry) error {
+
+	if err := validate.Required("primary"+"."+"enabled", "body", m.Enabled); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *ZoneRequestPrimary) validateSecondaries(formats strfmt.Registry) error {
+
+	if err := validate.Required("primary"+"."+"secondaries", "body", m.Secondaries); err != nil {
+		return err
+	}
+
+	for i := 0; i < len(m.Secondaries); i++ {
+		if swag.IsZero(m.Secondaries[i]) { // not required
+			continue
+		}
+
+		if m.Secondaries[i] != nil {
+			if err := m.Secondaries[i].Validate(formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("primary" + "." + "secondaries" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (m *ZoneRequestPrimary) MarshalBinary() ([]byte, error) {
+	if m == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(m)
+}
+
+// UnmarshalBinary interface implementation
+func (m *ZoneRequestPrimary) UnmarshalBinary(b []byte) error {
+	var res ZoneRequestPrimary
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*m = res
+	return nil
+}
+
+// ZoneRequestRecordsItems0 zone request records items0
+// swagger:model ZoneRequestRecordsItems0
+type ZoneRequestRecordsItems0 struct {
+
+	// domain
+	Domain string `json:"domain,omitempty"`
+
+	// id
+	ID string `json:"id,omitempty"`
+
+	// short answers
+	ShortAnswers []string `json:"short_answers"`
+
+	// tier
+	Tier int64 `json:"tier,omitempty"`
+
+	// ttl
+	TTL int64 `json:"ttl,omitempty"`
+
+	// type
+	Type string `json:"type,omitempty"`
+}
+
+// Validate validates this zone request records items0
+func (m *ZoneRequestRecordsItems0) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (m *ZoneRequestRecordsItems0) MarshalBinary() ([]byte, error) {
+	if m == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(m)
+}
+
+// UnmarshalBinary interface implementation
+func (m *ZoneRequestRecordsItems0) UnmarshalBinary(b []byte) error {
+	var res ZoneRequestRecordsItems0
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}

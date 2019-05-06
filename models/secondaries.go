@@ -11,7 +11,7 @@ import (
 	"github.com/go-openapi/swag"
 )
 
-// Secondaries Secondaries
+// Secondaries secondaries
 // swagger:model Secondaries
 type Secondaries struct {
 
@@ -19,13 +19,13 @@ type Secondaries struct {
 	IP string `json:"ip,omitempty"`
 
 	// networks
-	Networks []int32 `json:"networks"`
+	Networks []int64 `json:"networks"`
 
 	// notify
 	Notify bool `json:"notify,omitempty"`
 
 	// port
-	Port int32 `json:"port,omitempty"`
+	Port int64 `json:"port,omitempty"`
 }
 
 // Validate validates this secondaries

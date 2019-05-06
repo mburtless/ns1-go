@@ -13,7 +13,7 @@ import (
 	"github.com/go-openapi/validate"
 )
 
-// Error Error
+// Error error
 // swagger:model Error
 type Error struct {
 

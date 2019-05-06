@@ -17,18 +17,18 @@ import (
 
 // API is the interface of the zones client
 type API interface {
-	// ZonesByZoneGet gets zone
-	// Returns a single active Zone and its basic configuration details. For convenience, a list of records in the zone, and some basic details of each record, is also included.
-	ZonesByZoneGet(ctx context.Context, params *ZonesByZoneGetParams) (*ZonesByZoneGetOK, error)
-	// ZonesByZonePost modifies zone
-	// Very long desc of modifying a zone
-	ZonesByZonePost(ctx context.Context, params *ZonesByZonePostParams) (*ZonesByZonePostOK, error)
-	// ZonesByZonePut creates zone
+	// CreateZone creates a new DNS zone
 	// Very long desc of creating a new zone
-	ZonesByZonePut(ctx context.Context, params *ZonesByZonePutParams) (*ZonesByZonePutOK, error)
-	// ZonesGet gets zones
+	CreateZone(ctx context.Context, params *CreateZoneParams) (*CreateZoneOK, error)
+	// GetZone gets a zone s details
+	// Returns a single active Zone and its basic configuration details. For convenience, a list of records in the zone, and some basic details of each record, is also included.
+	GetZone(ctx context.Context, params *GetZoneParams) (*GetZoneOK, error)
+	// GetZones gets list of active zones
 	// Returns all active zones and basic zone configuration details for each.
-	ZonesGet(ctx context.Context, params *ZonesGetParams) (*ZonesGetOK, error)
+	GetZones(ctx context.Context, params *GetZonesParams) (*GetZonesOK, error)
+	// ModifyZone modifies a zone
+	// Very long desc of modifying a zone
+	ModifyZone(ctx context.Context, params *ModifyZoneParams) (*ModifyZoneOK, error)
 }
 
 // New creates a new zones API client.
@@ -50,75 +50,21 @@ type Client struct {
 }
 
 /*
-ZonesByZoneGet gets zone
-
-Returns a single active Zone and its basic configuration details. For convenience, a list of records in the zone, and some basic details of each record, is also included.
-*/
-func (a *Client) ZonesByZoneGet(ctx context.Context, params *ZonesByZoneGetParams) (*ZonesByZoneGetOK, error) {
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
-		ID:                 "ZonesByZoneGet",
-		Method:             "GET",
-		PathPattern:        "/zones/{zone}",
-		ProducesMediaTypes: []string{"application/json"},
-		ConsumesMediaTypes: []string{"application/json"},
-		Schemes:            []string{"https"},
-		Params:             params,
-		Reader:             &ZonesByZoneGetReader{formats: a.formats},
-		AuthInfo:           a.authInfo,
-		Context:            ctx,
-		Client:             params.HTTPClient,
-	})
-	if err != nil {
-		return nil, err
-	}
-	return result.(*ZonesByZoneGetOK), nil
-
-}
-
-/*
-ZonesByZonePost modifies zone
-
-Very long desc of modifying a zone
-*/
-func (a *Client) ZonesByZonePost(ctx context.Context, params *ZonesByZonePostParams) (*ZonesByZonePostOK, error) {
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
-		ID:                 "ZonesByZonePost",
-		Method:             "POST",
-		PathPattern:        "/zones/{zone}",
-		ProducesMediaTypes: []string{"application/json"},
-		ConsumesMediaTypes: []string{"application/json"},
-		Schemes:            []string{"https"},
-		Params:             params,
-		Reader:             &ZonesByZonePostReader{formats: a.formats},
-		AuthInfo:           a.authInfo,
-		Context:            ctx,
-		Client:             params.HTTPClient,
-	})
-	if err != nil {
-		return nil, err
-	}
-	return result.(*ZonesByZonePostOK), nil
-
-}
-
-/*
-ZonesByZonePut creates zone
+CreateZone creates a new DNS zone
 
 Very long desc of creating a new zone
 */
-func (a *Client) ZonesByZonePut(ctx context.Context, params *ZonesByZonePutParams) (*ZonesByZonePutOK, error) {
+func (a *Client) CreateZone(ctx context.Context, params *CreateZoneParams) (*CreateZoneOK, error) {
 
 	result, err := a.transport.Submit(&runtime.ClientOperation{
-		ID:                 "ZonesByZonePut",
+		ID:                 "createZone",
 		Method:             "PUT",
 		PathPattern:        "/zones/{zone}",
-		ProducesMediaTypes: []string{"application/json"},
+		ProducesMediaTypes: []string{""},
 		ConsumesMediaTypes: []string{"application/json"},
 		Schemes:            []string{"https"},
 		Params:             params,
-		Reader:             &ZonesByZonePutReader{formats: a.formats},
+		Reader:             &CreateZoneReader{formats: a.formats},
 		AuthInfo:           a.authInfo,
 		Context:            ctx,
 		Client:             params.HTTPClient,
@@ -126,26 +72,26 @@ func (a *Client) ZonesByZonePut(ctx context.Context, params *ZonesByZonePutParam
 	if err != nil {
 		return nil, err
 	}
-	return result.(*ZonesByZonePutOK), nil
+	return result.(*CreateZoneOK), nil
 
 }
 
 /*
-ZonesGet gets zones
+GetZone gets a zone s details
 
-Returns all active zones and basic zone configuration details for each.
+Returns a single active Zone and its basic configuration details. For convenience, a list of records in the zone, and some basic details of each record, is also included.
 */
-func (a *Client) ZonesGet(ctx context.Context, params *ZonesGetParams) (*ZonesGetOK, error) {
+func (a *Client) GetZone(ctx context.Context, params *GetZoneParams) (*GetZoneOK, error) {
 
 	result, err := a.transport.Submit(&runtime.ClientOperation{
-		ID:                 "ZonesGet",
+		ID:                 "getZone",
 		Method:             "GET",
-		PathPattern:        "/zones",
+		PathPattern:        "/zones/{zone}",
 		ProducesMediaTypes: []string{"application/json"},
-		ConsumesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{""},
 		Schemes:            []string{"https"},
 		Params:             params,
-		Reader:             &ZonesGetReader{formats: a.formats},
+		Reader:             &GetZoneReader{formats: a.formats},
 		AuthInfo:           a.authInfo,
 		Context:            ctx,
 		Client:             params.HTTPClient,
@@ -153,6 +99,60 @@ func (a *Client) ZonesGet(ctx context.Context, params *ZonesGetParams) (*ZonesGe
 	if err != nil {
 		return nil, err
 	}
-	return result.(*ZonesGetOK), nil
+	return result.(*GetZoneOK), nil
+
+}
+
+/*
+GetZones gets list of active zones
+
+Returns all active zones and basic zone configuration details for each.
+*/
+func (a *Client) GetZones(ctx context.Context, params *GetZonesParams) (*GetZonesOK, error) {
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
+		ID:                 "getZones",
+		Method:             "GET",
+		PathPattern:        "/zones",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{""},
+		Schemes:            []string{"https"},
+		Params:             params,
+		Reader:             &GetZonesReader{formats: a.formats},
+		AuthInfo:           a.authInfo,
+		Context:            ctx,
+		Client:             params.HTTPClient,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return result.(*GetZonesOK), nil
+
+}
+
+/*
+ModifyZone modifies a zone
+
+Very long desc of modifying a zone
+*/
+func (a *Client) ModifyZone(ctx context.Context, params *ModifyZoneParams) (*ModifyZoneOK, error) {
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
+		ID:                 "modifyZone",
+		Method:             "POST",
+		PathPattern:        "/zones/{zone}",
+		ProducesMediaTypes: []string{"text/html"},
+		ConsumesMediaTypes: []string{""},
+		Schemes:            []string{"https"},
+		Params:             params,
+		Reader:             &ModifyZoneReader{formats: a.formats},
+		AuthInfo:           a.authInfo,
+		Context:            ctx,
+		Client:             params.HTTPClient,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return result.(*ModifyZoneOK), nil
 
 }

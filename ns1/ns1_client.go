@@ -14,7 +14,7 @@ import (
 	rtclient "github.com/go-openapi/runtime/client"
 	"github.com/go-openapi/strfmt"
 
-	"github.com/mburtless/ns1-go-v3/ns1/zones"
+	"github.com/mburtless/ns1-go/ns1/zones"
 )
 
 const (
