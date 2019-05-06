@@ -18,7 +18,7 @@ import (
 // API is the interface of the zones client
 type API interface {
 	// CreateZone creates a new DNS zone
-	// Very long desc of creating a new zone
+	// Very long desc of creating a new zone.
 	CreateZone(ctx context.Context, params *CreateZoneParams) (*CreateZoneOK, error)
 	// GetZone gets a zone s details
 	// Returns a single active Zone and its basic configuration details. For convenience, a list of records in the zone, and some basic details of each record, is also included.
@@ -27,7 +27,7 @@ type API interface {
 	// Returns all active zones and basic zone configuration details for each.
 	GetZones(ctx context.Context, params *GetZonesParams) (*GetZonesOK, error)
 	// ModifyZone modifies a zone
-	// Very long desc of modifying a zone
+	// Very long desc of modifying a zone.
 	ModifyZone(ctx context.Context, params *ModifyZoneParams) (*ModifyZoneOK, error)
 }
 
@@ -52,7 +52,7 @@ type Client struct {
 /*
 CreateZone creates a new DNS zone
 
-Very long desc of creating a new zone
+Very long desc of creating a new zone.
 */
 func (a *Client) CreateZone(ctx context.Context, params *CreateZoneParams) (*CreateZoneOK, error) {
 
@@ -133,7 +133,7 @@ func (a *Client) GetZones(ctx context.Context, params *GetZonesParams) (*GetZone
 /*
 ModifyZone modifies a zone
 
-Very long desc of modifying a zone
+Very long desc of modifying a zone.
 */
 func (a *Client) ModifyZone(ctx context.Context, params *ModifyZoneParams) (*ModifyZoneOK, error) {
 

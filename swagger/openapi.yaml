@@ -20,6 +20,8 @@ paths:
       responses:
         200:
           $ref: '#/components/responses/200Zones'
+        401:
+          $ref: '#/components/responses/401Unauthorized'
         default:
           $ref: "#/components/responses/Default"
   /zones/{zone}:
@@ -34,36 +36,42 @@ paths:
       responses:
         200:
           $ref: '#/components/responses/200Zone'
-        404:
-          $ref: "#/components/responses/404ZoneNotFound"
         400:
           $ref: '#/components/responses/400JSONBadReq'
+        404:
+          $ref: "#/components/responses/404ZoneNotFound"
+        401:
+          $ref: '#/components/responses/401Unauthorized'
     put:
       tags:
       - Zones
       summary: Create a new DNS zone
       requestBody:
         $ref: '#/components/requestBodies/zoneReqBody'
-      description: Very long desc of creating a new zone
+      description: Very long desc of creating a new zone.
       operationId: createZone
       responses:
         200:
           $ref: '#/components/responses/200Zone'
         400:
           $ref: '#/components/responses/400JSONBadReq'
+        401:
+          $ref: '#/components/responses/401Unauthorized'
     post:
       tags:
       - Zones
       summary: Modify a zone
       requestBody:
         $ref: '#/components/requestBodies/zoneReqBody'
-      description: Very long desc of modifying a zone
+      description: Very long desc of modifying a zone.
       operationId: modifyZone
       responses:
         200:
           $ref: '#/components/responses/200Zone'
         400:
           $ref: '#/components/responses/400HTMLBadReq'
+        401:
+          $ref: '#/components/responses/401Unauthorized'
 components:
   parameters:
     zoneNameParam:
@@ -90,6 +98,12 @@ components:
             $ref: "#/components/schemas/BadRequest"
     400JSONBadReq:
       description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+    401Unauthorized:
+      description: Unauthorized
       content:
         application/json:
           schema:

@@ -27,6 +27,12 @@
               "$ref": "#/definitions/Zones"
             }
           },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
           "default": {
             "description": "unexpected error",
             "schema": {
@@ -70,6 +76,12 @@
               "$ref": "#/definitions/Error"
             }
           },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
           "404": {
             "description": "Zone not found",
             "schema": {
@@ -101,12 +113,18 @@
             "schema": {
               "$ref": "#/definitions/BadRequest"
             }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
           }
         },
         "tags": [
           "Zones"
         ],
-        "description": "Very long desc of modifying a zone",
+        "description": "Very long desc of modifying a zone.",
         "operationId": "modifyZone",
         "summary": "Modify a zone"
       },
@@ -137,12 +155,18 @@
             "schema": {
               "$ref": "#/definitions/Error"
             }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
           }
         },
         "tags": [
           "Zones"
         ],
-        "description": "Very long desc of creating a new zone",
+        "description": "Very long desc of creating a new zone.",
         "operationId": "createZone",
         "summary": "Create a new DNS zone"
       }
@@ -460,6 +484,12 @@
       },
       "400JSONBadReq": {
         "description": "Bad Request",
+        "schema": {
+          "$ref": "#/definitions/Error"
+        }
+      },
+      "401Unauthorized": {
+        "description": "Unauthorized",
         "schema": {
           "$ref": "#/definitions/Error"
         }
