@@ -1,0 +1,355 @@
+openapi: 3.0.1
+info:
+  title: NS1 API
+  description: Manage your zones and records, data sources and feeds, account settings
+    and users, and other aspects of your NS1 account.
+  license:
+    name: MIT
+  version: 0.0.1
+servers:
+- url: https://api.nsone.net/v1/
+security:
+- X-NSONE-Key: []
+paths:
+  /zones:
+    get:
+      tags:
+      - Zones
+      summary: Get list of active zones
+      description: Returns all active zones and basic zone configuration details for
+        each.
+      operationId: getZones
+      responses:
+        200:
+          description: A list of active zones
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Zones'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /zones/{zone}:
+    get:
+      tags:
+      - Zones
+      summary: Get a zone's details
+      description: Returns a single active Zone and its basic configuration details.
+        For convenience, a list of records in the zone, and some basic details of
+        each record, is also included.
+      operationId: getZone
+      parameters:
+      - name: zone
+        in: path
+        description: The name of the zone to retrieve
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        200:
+          description: A single active zone
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Zone'
+        400:
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: Zone not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    put:
+      tags:
+      - Zones
+      summary: Create a new DNS zone
+      description: Very long desc of creating a new zone
+      operationId: createZone
+      parameters:
+      - name: zone
+        in: path
+        description: The name of the zone to retrieve
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      requestBody:
+        $ref: '#/components/requestBodies/zoneReqBody'
+      responses:
+        200:
+          description: A single active zone
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Zone'
+        400:
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      tags:
+      - Zones
+      summary: Modify a zone
+      description: Very long desc of modifying a zone
+      operationId: modifyZone
+      parameters:
+      - name: zone
+        in: path
+        description: The name of the zone to retrieve
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      requestBody:
+        $ref: '#/components/requestBodies/zoneReqBody'
+      responses:
+        200:
+          description: A single active zone
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Zone'
+        400:
+          description: Bad Request
+          content:
+            text/html:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+components:
+  schemas:
+    ZoneRequest:
+      properties:
+        id:
+          type: string
+        hostmaster:
+          type: string
+        ttl:
+          type: integer
+        nx_ttl:
+          type: integer
+        retry:
+          type: integer
+        zone:
+          type: string
+        refresh:
+          type: integer
+        expiry:
+          type: integer
+        dns_servers:
+          type: array
+          items:
+            type: string
+        networks:
+          type: array
+          items:
+            type: integer
+        network_pools:
+          type: array
+          items:
+            type: string
+        primary:
+          $ref: '#/components/schemas/ZoneRequest_primary'
+        records:
+          type: array
+          items:
+            $ref: '#/components/schemas/ZoneRequest_records'
+        meta:
+          $ref: '#/components/schemas/Metadata'
+    Zone:
+      required:
+      - dns_servers
+      - expiry
+      - hostmaster
+      - id
+      - meta
+      - network_pools
+      - networks
+      - nx_ttl
+      - primary
+      - records
+      - refresh
+      - retry
+      - ttl
+      - zone
+      properties:
+        id:
+          type: string
+        hostmaster:
+          type: string
+        ttl:
+          type: integer
+        nx_ttl:
+          type: integer
+        retry:
+          type: integer
+        zone:
+          type: string
+        refresh:
+          type: integer
+        expiry:
+          type: integer
+        dns_servers:
+          type: array
+          items:
+            type: string
+        networks:
+          type: array
+          items:
+            type: integer
+        network_pools:
+          type: array
+          items:
+            type: string
+        primary:
+          $ref: '#/components/schemas/ZoneRequest_primary'
+        records:
+          type: array
+          items:
+            $ref: '#/components/schemas/ZoneRequest_records'
+        meta:
+          $ref: '#/components/schemas/Metadata'
+    Secondaries:
+      properties:
+        ip:
+          type: string
+        port:
+          type: integer
+        notify:
+          type: boolean
+        networks:
+          type: array
+          items:
+            type: integer
+    Metadata:
+      properties:
+        desc:
+          type: string
+        category:
+          type: string
+        shortdesc:
+          type: string
+    Zones:
+      type: array
+      items:
+        $ref: '#/components/schemas/Zone'
+    Error:
+      required:
+      - message
+      properties:
+        message:
+          type: string
+    BadRequest:
+      type: string
+    ZoneRequest_primary:
+      required:
+      - enabled
+      - secondaries
+      type: object
+      properties:
+        enabled:
+          type: boolean
+        secondaries:
+          type: array
+          items:
+            $ref: '#/components/schemas/Secondaries'
+    ZoneRequest_records:
+      required:
+      - domain
+      - id
+      - short_answers
+      - tier
+      - type
+      type: object
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+        tier:
+          type: integer
+        ttl:
+          type: integer
+        short_answers:
+          type: array
+          items:
+            type: string
+        domain:
+          type: string
+  responses:
+    400HTMLBadReq:
+      description: Bad Request
+      content:
+        text/html:
+          schema:
+            $ref: '#/components/schemas/BadRequest'
+    400JSONBadReq:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    404ZoneNotFound:
+      description: Zone not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    200Zone:
+      description: A single active zone
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Zone'
+    200Zones:
+      description: A list of active zones
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Zones'
+    Default:
+      description: unexpected error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  parameters:
+    zoneNameParam:
+      name: zone
+      in: path
+      description: The name of the zone to retrieve
+      required: true
+      style: simple
+      explode: false
+      schema:
+        type: string
+  requestBodies:
+    zoneReqBody:
+      description: The zone to create
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ZoneRequest'
+      required: true
+  securitySchemes:
+    X-NSONE-Key:
+      type: apiKey
+      description: Most API requests are authenticated with a simple API Key, which
+        you must specify in the X-NSONE-Key request header. You can manage your API
+        Keys in my.nsone.net. You should treat your API Keys as secrets! You should
+        also give them only the minimal access needed for your application.
+      name: X-NSONE-Key
+      in: header
