@@ -1,0 +1,735 @@
+openapi: "3.0.1"
+info:
+  title: "NS1"
+  description: "Manage your zones and records, data sources and feeds, account settings and users, and other aspects of your NS1 account."
+  version: "0.0.2"
+  license:
+    name: MIT
+servers:
+  - url: https://api.nsone.net/v1/
+security: 
+  - X-NSONE-Key: []
+paths:
+  /ipam/address/{addrId}/options:
+    parameters:
+      - $ref: '#/components/parameters/addrIdParam'
+    get:
+      tags:
+        - Address
+      summary: Get active DHCP options for address
+      description: Get active DHCP options for address.
+      operationId: getAddressOptions
+      responses:
+        200:
+          $ref: '#/components/responses/200DHCPOptions'
+        401:
+          $ref: '#/components/responses/401Unauthorized'
+        default:
+          $ref: "#/components/responses/Default"
+  /ipam/address/{addrId}/options/{dhcpOptionNameSpace}/{dhcpOptionName}:
+    parameters:
+      - $ref: '#/components/parameters/addrIdParam'
+      - $ref: '#/components/parameters/dhcpOptionNameSpaceParam'
+      - $ref: '#/components/parameters/dhcpOptionNameParam'
+    put:
+      tags:
+        - Address
+      summary: Adds a DHCP option to an address
+      description: Adds a DHCP option to an address
+      operationId: addAddressOption
+      requestBody:
+        $ref: '#/components/requestBodies/addDHCPOptionReqBody'
+      responses:
+        204:
+          description: "the option was set successfully"
+        401:
+          $ref: '#/components/responses/401Unauthorized'
+        default:
+          $ref: "#/components/responses/Default"
+    delete:
+      tags:
+        - Address
+      summary: Removes a DHCP option from an address
+      description: Removes a DHCP option from an address
+      operationId: removeAddressOption
+      responses:
+        204:
+          description: "the option was removed successfully"
+        401:
+          $ref: '#/components/responses/401Unauthorized'
+        default:
+          $ref: "#/components/responses/Default"
+          
+  /dhcp/scopegroup/{scopeGroupId}/scopes:
+    parameters:
+      - $ref: '#/components/parameters/scopeGroupIdParam'
+    get:
+      tags:
+        - ScopeGroup
+      summary: list scopes
+      description: list the scopes in a scope group
+      operationId: listScopes
+      responses:
+        200:
+          $ref: '#/components/responses/200ScopeList'
+        401:
+          $ref: '#/components/responses/401Unauthorized'
+        default:
+          $ref: "#/components/responses/Default"
+  /dhcp/scopegroup/{scopeGroupId}/scopes/{addrId}:
+    parameters:
+      - $ref: '#/components/parameters/scopeGroupIdParam'
+      - $ref: '#/components/parameters/addrIdParam'
+    put:
+      tags:
+        - ScopeGroup
+      summary: adds a scope
+      description: adds a scope to a scope group
+      operationId: addScope
+      requestBody:
+        $ref: '#/components/requestBodies/addScopeReqBody'
+      responses:
+        204:
+          description: "the scoped was added successfully"
+        401:
+          $ref: '#/components/responses/401Unauthorized'
+        default:
+          $ref: "#/components/responses/Default"
+    delete:
+      tags:
+        - ScopeGroup
+      summary: removes a scope
+      description: removes a scope from a scope group
+      operationId: removeScope
+      responses:
+        204:
+          description: "the scope was removed successfully"
+        401:
+          $ref: '#/components/responses/401Unauthorized'
+        default:
+          $ref: "#/components/responses/Default"
+          
+  /dhcp/scopegroup/{scopeGroupId}/reservations:
+    parameters:
+      - $ref: '#/components/parameters/scopeGroupIdParam'
+    get:
+      tags:
+        - ScopeGroup
+      summary: list scope group reservations
+      description: list the reservations in a scope group
+      operationId: listReservations
+      responses:
+        200:
+          $ref: '#/components/responses/200ReservationList'
+        401:
+          $ref: '#/components/responses/401Unauthorized'
+        default:
+          $ref: "#/components/responses/Default"
+  /dhcp/scopegroup/{scopeGroupId}/reservations/{addrId}:
+    parameters:
+      - $ref: '#/components/parameters/scopeGroupIdParam'
+      - $ref: '#/components/parameters/addrIdParam'
+    put:
+      tags:
+        - ScopeGroup
+      summary: adds a reservation
+      description: adds a reservation to a scope group
+      operationId: addReservation
+      requestBody:
+        $ref: '#/components/requestBodies/addReservationReqBody'
+      responses:
+        204:
+          description: "the reservation was added successfully"
+        401:
+          $ref: '#/components/responses/401Unauthorized'
+        default:
+          $ref: "#/components/responses/Default"
+    delete:
+      tags:
+        - ScopeGroup
+      summary: removes a reservation
+      description: removes a reservation from a scope group
+      operationId: removeReservation
+      responses:
+        204:
+          description: "the scoped was removed successfully"
+        401:
+          $ref: '#/components/responses/401Unauthorized'
+        default:
+          $ref: "#/components/responses/Default"
+  /zones:
+    get:
+      tags:
+      - Zones
+      summary: Get list of active zones
+      description: Returns all active zones and basic zone configuration details for each.
+      operationId: getZones
+      responses:
+        200:
+          $ref: '#/components/responses/200Zones'
+        401:
+          $ref: '#/components/responses/401Unauthorized'
+        default:
+          $ref: "#/components/responses/Default"
+  /zones/{zone}:
+    parameters:
+      - $ref: '#/components/parameters/zoneNameParam'
+    get:
+      tags:
+      - Zones
+      summary: Get a zone's details
+      description: Returns a single active Zone and its basic configuration details. For convenience, a list of records in the zone, and some basic details of each record, is also included.
+      operationId: getZone
+      responses:
+        200:
+          $ref: '#/components/responses/200Zone'
+        400:
+          $ref: '#/components/responses/400JSONBadReq'
+        404:
+          $ref: "#/components/responses/404ZoneNotFound"
+        401:
+          $ref: '#/components/responses/401Unauthorized'
+    put:
+      tags:
+      - Zones
+      summary: Create a new DNS zone
+      requestBody:
+        $ref: '#/components/requestBodies/zoneReqBody'
+      description: Very long desc of creating a new zone.
+      operationId: createZone
+      responses:
+        200:
+          $ref: '#/components/responses/200Zone'
+        400:
+          $ref: '#/components/responses/400JSONBadReq'
+        401:
+          $ref: '#/components/responses/401Unauthorized'
+    post:
+      tags:
+      - Zones
+      summary: Modify a zone
+      requestBody:
+        $ref: '#/components/requestBodies/zoneReqBody'
+      description: Very long desc of modifying a zone.
+      operationId: modifyZone
+      responses:
+        200:
+          $ref: '#/components/responses/200Zone'
+        400:
+          $ref: '#/components/responses/400HTMLBadReq'
+        401:
+          $ref: '#/components/responses/401Unauthorized'
+  /zones/{zone}/{record}:
+    parameters:
+      - $ref: '#/components/parameters/zoneNameParam'
+      - $ref: '#/components/parameters/recordNameParam'
+    get:
+      tags:
+      - Records
+      summary: Get record configuration details
+      description: Returns full configuration for a DNS record including basic config, answers, regions, filter chain configuration, and all metadata tables and data feeds attached to entities in the record.
+      operationId: getRecords
+      responses:
+        200:
+          $ref: '#/components/responses/200Record'
+        default:
+          $ref: "#/components/responses/Default"
+components:
+  parameters:
+    zoneNameParam:
+      name: zone
+      in: path
+      required: true
+      description: The name of the zone to retrieve
+      schema:
+        type: string
+    recordNameParam:
+      name: record
+      in: path
+      required: true
+      description: The name of the record to retrieve
+      schema:
+        type: string
+    addrIdParam:
+      name: addrId
+      in: path
+      required: true
+      description: The id of the address
+      schema:
+        type: integer
+    dhcpOptionNameSpaceParam:
+      name: dhcpOptionNameSpace
+      in: path
+      required: true
+      description: The namespace of the DHCP option
+      schema:
+        type: string
+    dhcpOptionNameParam:
+      name: dhcpOptionName
+      in: path
+      required: true
+      description: The name of the DHCP option
+      schema:
+        type: string
+    scopeGroupIdParam:
+      name: scopeGroupId
+      in: path
+      required: true
+      description: The id of the scope group
+      schema:
+        type: integer
+  requestBodies:
+    zoneReqBody:
+      description: The zone to create
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ZoneRequest'
+    addDHCPOptionReqBody:
+      description: The option to add
+      required: true
+      content:
+        application/json:
+          schema:
+            properties:
+              value:
+                $ref: '#/components/schemas/DHCPOptionValue'
+    addScopeReqBody:
+      description: The scope
+      required: true
+      content:
+        application/json:
+          schema:
+            properties: {}
+    addReservationReqBody:
+      description: The reservation
+      required: true
+      content:
+        application/json:
+          schema:
+            properties: {}
+  responses:
+    400HTMLBadReq:
+      description: Bad Request
+      content:
+        text/html:
+          schema:
+            $ref: "#/components/schemas/BadRequest"
+    400JSONBadReq:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+    401Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+    404ZoneNotFound:
+      description: Zone not found
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+    200Zone:
+      description: A single active zone
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Zone"
+    200Zones:
+      description: A list of active zones
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Zones"
+    200Record:
+      description: A single active record
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Record"
+    200DHCPOptions:
+      description: A list of active options
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/DHCPOptions"
+    200ScopeList:
+      description: A list of active scopes for this scope group
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ScopeList"
+    200ReservationList:
+      description: A list of reservations for this scope group
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ReservationList"
+    Default:
+      description: unexpected error
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+  securitySchemes:
+    X-NSONE-Key:
+      type: apiKey
+      description: Most API requests are authenticated with a simple API Key, which you must specify in the X-NSONE-Key request header. You can manage your API Keys in my.nsone.net. You should treat your API Keys as secrets! You should also give them only the minimal access needed for your application.
+      name: X-NSONE-Key
+      in: header
+  schemas:
+    FeedPtr:
+      required:
+      - "FeedID"
+      properties:
+        feed:
+          type: string
+    Filter:
+      required:
+      - "filter"
+      - "config"
+      properties:
+        filter:
+          type: string
+        disabled:
+          type: boolean
+        config:
+          type: object
+          additionalProperties:
+            type: string
+    Answers:
+      required: 
+      - "answer"
+      - "id"
+      properties:
+        id:
+          type: string
+        answer:
+          type: array
+          items:
+            anyOf: 
+            - type: string
+            - type: integer
+        region:
+          type: string
+        meta: 
+          $ref: "#/components/schemas/Metadata"
+    Record:
+      required: 
+      - "answers"
+      properties:
+        answers:
+          type: array
+          items:
+            $ref: "#/components/schemas/Answers"
+        domain: 
+          type: "string"
+        filters: 
+          type: "array"
+          items:
+            $ref: "#/components/schemas/Filter"
+        id: 
+          type: "string"
+        link:
+          type: "string"
+          nullable: true
+        meta:
+          $ref: "#/components/schemas/Metadata"
+        networks:
+          type: "array"
+          items:
+            type: integer
+    ZoneRequest:
+       properties: 
+        id: 
+          type: "string"
+        hostmaster: 
+          type: "string"
+        ttl: 
+          type: "integer"
+        nx_ttl: 
+          type: "integer"
+        retry: 
+          type: "integer"
+        zone: 
+          type: "string"
+        refresh: 
+          type: "integer"
+        expiry: 
+          type: "integer"
+        dns_servers: 
+          type: "array"
+          items: 
+            type: "string"
+        networks: 
+          type: "array"
+          items: 
+            type: "integer"
+        network_pools: 
+          type: "array"
+          items: 
+            type: "string"
+        primary: 
+          type: "object"
+          required: 
+            - "enabled"
+            - "secondaries"
+          properties: 
+            enabled: 
+              type: "boolean"
+            secondaries: 
+              type: "array"
+              items:
+                $ref: "#/components/schemas/Secondaries"
+        records: 
+          type: "array"
+          items: 
+            type: "object"
+            properties: 
+              id: 
+                type: "string"
+              type: 
+                type: "string"
+              tier: 
+                type: "integer"
+              ttl: 
+                type: "integer"
+              short_answers: 
+                type: "array"
+                items: 
+                  type: "string"
+              domain: 
+                type: "string"
+        meta: 
+          $ref: "#/components/schemas/Metadata"
+    Zone:
+      required: 
+        - "id"
+        - "hostmaster"
+        - "ttl"
+        - "nx_ttl"
+        - "retry"
+        - "zone"
+        - "refresh"
+        - "expiry"
+        - "dns_servers"
+        - "networks"
+        - "network_pools"
+        - "primary"
+        - "records"
+        - "meta"
+      properties: 
+        id: 
+          type: "string"
+        hostmaster: 
+          type: "string"
+        ttl: 
+          type: "integer"
+        nx_ttl: 
+          type: "integer"
+        retry: 
+          type: "integer"
+        zone: 
+          type: "string"
+        refresh: 
+          type: "integer"
+        expiry: 
+          type: "integer"
+        dns_servers: 
+          type: "array"
+          items: 
+            type: "string"
+        networks: 
+          type: "array"
+          items: 
+            type: "integer"
+        network_pools: 
+          type: "array"
+          items: 
+            type: "string"
+        primary: 
+          type: "object"
+          required: 
+            - "enabled"
+            - "secondaries"
+          properties: 
+            enabled: 
+              type: "boolean"
+            secondaries: 
+              type: "array"
+              items:
+                $ref: "#/components/schemas/Secondaries"
+        records: 
+          type: "array"
+          items: 
+            type: "object"
+            required: 
+              - "id"
+              - "type"
+              - "tier"
+              - "short_answers"
+              - "domain"
+            properties: 
+              id: 
+                type: "string"
+              type: 
+                type: "string"
+              tier: 
+                type: "integer"
+              ttl: 
+                type: "integer"
+              short_answers: 
+                type: "array"
+                items: 
+                  type: "string"
+              domain: 
+                type: "string"
+        meta: 
+          $ref: "#/components/schemas/Metadata"
+    Secondaries:
+      properties:
+        ip:
+          type: string
+        port:
+          type: integer
+        notify:
+          type: boolean
+        networks:
+          type: array
+          items:
+            type: integer
+    Metadata:
+      properties:
+        up:
+          oneOf:
+            - type: boolean
+            - $ref: "#/components/schemas/FeedPtr"
+        connections:
+          oneOf:
+            - type: integer
+            - $ref: "#/components/schemas/FeedPtr"
+        requests:
+          oneOf:
+            - type: integer
+            - $ref: "#/components/schemas/FeedPtr"
+        loadAvg:
+          oneOf:
+            - type: number
+            - $ref: "#/components/schemas/FeedPtr"
+        pulsar:
+          oneOf:
+            - type: string
+            - $ref: "#/components/schemas/FeedPtr"
+        latitude:
+          oneOf:
+            - type: number
+            - $ref: "#/components/schemas/FeedPtr"
+        longitude:
+          oneOf:
+            - type: number
+            - $ref: "#/components/schemas/FeedPtr"
+        georegion:
+          oneOf:
+            - type: array
+              items:
+                type: string
+            - $ref: "#/components/schemas/FeedPtr"
+        country:
+          oneOf:
+            - type: array
+              items:
+                type: string
+            - $ref: "#/components/schemas/FeedPtr"
+        us_state:
+          oneOf:
+            - type: array
+              items:
+                type: string
+            - $ref: "#/components/schemas/FeedPtr"
+        ca_province:
+          oneOf:
+            - type: array
+              items:
+                type: string
+            - $ref: "#/components/schemas/FeedPtr"
+        note:
+          oneOf:
+            - type: string
+            - $ref: "#/components/schemas/FeedPtr"
+        ip_prefixes:
+          oneOf:
+            - type: array
+              items:
+                type: string
+            - $ref: "#/components/schemas/FeedPtr"
+        asn:
+          oneOf:
+            - type: array
+              items:
+                type: string
+            - $ref: "#/components/schemas/FeedPtr"
+        priority:
+          oneOf:
+            - type: integer
+            - $ref: "#/components/schemas/FeedPtr"
+        weight:
+          oneOf:
+            - type: number
+            - $ref: "#/components/schemas/FeedPtr"
+        low_watermark:
+          oneOf:
+            - type: number
+            - $ref: "#/components/schemas/FeedPtr"
+        high_watermark:
+          oneOf:
+            - type: number
+            - $ref: "#/components/schemas/FeedPtr"
+    Zones:
+      type: array
+      items:
+        $ref: "#/components/schemas/Zone"
+    DHCPOption:
+      properties:
+        name:
+          type: string
+        value:
+          $ref: "#/components/schemas/DHCPOptionValue"
+    DHCPOptionValue:
+      oneOf:
+        - type: string
+        - type: array
+          items:
+            type: string
+    DHCPOptions:
+      type: array
+      items:
+        $ref: "#/components/schemas/DHCPOption"
+    ScopeList:
+      type: array
+      items:
+        type: object
+        properties:
+          address_id:
+            type: integer
+            description: the id of the address
+    ReservationList:
+      type: array
+      items:
+        type: object
+        properties:
+          address_id:
+            type: integer
+            description: the id of the address
+    Error:
+      required:
+        - message
+      properties:
+        message:
+          type: string
+    BadRequest:
+      type: string

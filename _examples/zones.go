@@ -25,7 +25,13 @@ func main() {
 	// Get zone
 	zone, err := client.Zones.GetZone(context.Background(), zoneIn)
 	if err != nil {
-		log.Panic(err)
+		switch err.(type) {
+		case *zones.GetZoneNotFound:
+			log.Printf("Error: %s\n", *err.(*zones.GetZoneNotFound).Payload.Message)
+		default:
+			log.Printf("Something else: %#v\n", err.Error())
+		}
+		os.Exit(1)
 	}
 	for _, record := range zone.Payload.Records {
 		fmt.Printf("%#v\n", *record.Domain)
