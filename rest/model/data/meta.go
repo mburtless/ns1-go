@@ -427,7 +427,7 @@ var validationMap = map[string]metaValidation{
 		func(v reflect.Value) error {
 			return validatePositiveNumber("LoadAvg", v)
 		})},
-	"Pulsar":     {kinds(reflect.String), nil},
+	"Pulsar":     {kinds(reflect.String, reflect.Slice), nil},
 	"Latitude":   {kinds(reflect.Float64, reflect.Int), checkFuncs(validateLatLong)},
 	"Longitude":  {kinds(reflect.Float64, reflect.Int), checkFuncs(validateLatLong)},
 	"Georegion":  {kinds(reflect.String, reflect.Slice), checkFuncs(validateGeoregion)},
